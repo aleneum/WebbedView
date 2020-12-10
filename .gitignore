@@ -3,3 +3,4 @@
 build/
 .idea/
 /app/src/main/java/com/github/aleneum/WebbedView/Constants.java
+app/release
