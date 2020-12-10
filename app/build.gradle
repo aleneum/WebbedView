@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 def VUFORIA_SDK_DIR = '../vuforia'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 30
 
     sourceSets.main {
         jni.srcDirs = []
@@ -13,9 +13,9 @@ android {
     defaultConfig {
         applicationId "com.github.aleneum.WebbedView"
         minSdkVersion 24
-        targetSdkVersion 26
-        versionCode 800
-        versionName "8.0"
+        targetSdkVersion 30
+        versionCode 100
+        versionName "1.0"
 
         ndk {
             // Default ABI list for this app, can be over-ridden by providing an abiList property

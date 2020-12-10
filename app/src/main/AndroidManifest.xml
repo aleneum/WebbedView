@@ -55,6 +55,7 @@
         android:allowBackup="true"
         android:theme="@style/SampleAppsTheme"
         android:supportsRtl="false"
+        android:networkSecurityConfig="@xml/network_security_config"
         >
 
         <!-- The following must be present to facilitate use of ARCore, if available -->

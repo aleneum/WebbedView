@@ -16,6 +16,8 @@ public class CircleView extends View
     public List<float[]> mPoints = null;
     Paint paint = null;
     private static final String LOGTAG = "Circles";
+    public float mAspectX;
+    public float mAspectY;
 
     public CircleView(Context context, AttributeSet attrs)
     {
@@ -33,7 +35,8 @@ public class CircleView extends View
             super.onDraw(canvas);
             int radius = 20;
             for (float[] p : mPoints) {
-                canvas.drawCircle(p[0]*2, p[1]*2, radius, paint);
+
+                canvas.drawCircle(p[0]*mAspectX, p[1]*mAspectY, radius, paint);
             }
         }
 

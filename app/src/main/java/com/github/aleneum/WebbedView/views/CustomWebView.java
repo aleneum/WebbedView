@@ -3,8 +3,10 @@ package com.github.aleneum.WebbedView.views;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.webkit.ValueCallback;
@@ -87,6 +89,17 @@ public class CustomWebView extends WebView {
             // remove 'px' from string
             float resX = Float.parseFloat(width);
             float resY = Float.parseFloat(height);
+
+            // Browser and Screen resolution do not match
+            // add aspect ratio to fix CircleView
+            DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+            float mDisplayX = displayMetrics.widthPixels;
+            float mDisplayY = displayMetrics.heightPixels;
+            CircleView view = mActivity.findViewById(R.id.circles);
+
+            view.mAspectX = mDisplayX / resX;
+            view.mAspectY = mDisplayY / resY;
+
             Log.d(LOGTAG, Float.toString(resX) + ":" + Float.toString(resY));
             mProjection.updateResolution(resX, resY);
             mLoaded = true;
