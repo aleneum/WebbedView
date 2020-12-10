@@ -2,7 +2,6 @@
 
 Overlay Vuforia ImageTargets with websites.
 Requires at least Android API 24.
-Does not work with Android API 30.
 
 ## Prerequisites
 
