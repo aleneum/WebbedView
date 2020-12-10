@@ -1,0 +1,59 @@
+apply plugin: 'com.android.application'
+
+def VUFORIA_SDK_DIR = '../vuforia'
+
+android {
+    compileSdkVersion 26
+
+    sourceSets.main {
+        jni.srcDirs = []
+        jniLibs.srcDir "$VUFORIA_SDK_DIR/build/lib/"
+    }
+
+    defaultConfig {
+        applicationId "com.github.aleneum.WebbedView"
+        minSdkVersion 24
+        targetSdkVersion 26
+        versionCode 800
+        versionName "8.0"
+
+        ndk {
+            // Default ABI list for this app, can be over-ridden by providing an abiList property
+            // e.g. gradle -PabiList=x86 clean assembleDebug
+            abiFilters ((project.findProperty('abiList') ?: 'armeabi-v7a, arm64-v8a, x86').split(/,\s*/))
+        }
+    }
+
+    archivesBaseName = rootProject.projectDir.getName()
+
+    // Ensure that Vuforia Engine datasets placed in the assets folder do not get compressed as
+    // this can significantly increase their loading time
+    aaptOptions {
+        noCompress 'dat'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
+        }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    // ARCore library
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation files("$VUFORIA_SDK_DIR/build/java/Vuforia/Vuforia.jar")
+    implementation 'com.google.ar:core:1.4.0'
+    implementation 'org.jetbrains:annotations:15.0'
+    testImplementation 'junit:junit:4.12'
+}

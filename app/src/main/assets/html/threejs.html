@@ -1,0 +1,45 @@
+<html>
+<head>
+    <script src="js/three.min.js"></script>
+</head>
+<body>
+    <!--<h1 id="test" style="color:white;">Hello</h1>-->
+    <script type = "text/javascript">
+        var camera, light, scene, renderer, rectangle;
+
+        init();
+        animate();
+
+        function init() {
+            //camera
+            camera = new THREE.PerspectiveCamera(36.6, window.innerWidth / window.innerHeight, 0.01, 5);
+
+            //Scene
+            scene = new THREE.Scene();
+
+            //CubeGeometry
+            rectangle = new THREE.Mesh(new THREE.CubeGeometry(0.1, 0.1, 0.1), new THREE.MeshPhongMaterial());
+            rectangle.matrixAutoUpdate = false;
+            rectangle.matrix.elements = [0.7724137, -0.6350957, 0.005538224, 0.0, 0.63505435, 0.77217925, -0.021101523, 0.0, 0.009124986, 0.019816175, 0.99976206, 0.0, -0.09395851, -0.006853058, -0.2019324, 1.0]
+
+            scene.add(rectangle);
+
+            //HemisphereLight
+            hemiLight = new THREE.HemisphereLight(0xffbf67, 0x15c6ff);
+            scene.add(hemiLight);
+
+            //WebGL Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setClearColor( 0xffffff, 0 );
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.domElement.style.zIndex = 5;
+            document.body.appendChild(renderer.domElement);
+        }
+
+        function animate(mat) {
+            rectangle.matrix.elements = mat;
+            renderer.render(scene, camera);
+        }
+    </script>
+</body>
+</html>

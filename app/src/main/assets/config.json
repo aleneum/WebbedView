@@ -1,0 +1,11 @@
+{
+  "targetDefinitions": [
+    "AlARCo.xml"
+  ],
+  "defaultScaling": [0.1515, 0.106, -0.149, -0.1075],
+  "targets": {
+    "astronaut": {
+      "url": "http://google.com"
+    }
+  }
+}
