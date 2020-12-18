@@ -696,10 +696,11 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
     private final static int CMD_DEVICE_TRACKING = 1;
     private final static int CMD_UPDATE_TRACKING = 2;
     private final static int CMD_RELOAD_WEBVIEW = 3;
+    private final static int CMD_OPEN_LINKS = 4;
 
-    private final static int CMD_AUTOFOCUS = 4;
-    private final static int CMD_FLASH = 5;
-    private final static int CMD_DATASET_START_INDEX = 6;
+    private final static int CMD_AUTOFOCUS = 5;
+    private final static int CMD_FLASH = 6;
+    private final static int CMD_DATASET_START_INDEX = 7;
 
     private void setSampleAppMenuSettings() {
         SampleAppMenuGroup group;
@@ -707,6 +708,8 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
         group = mAppMenu.addGroup("", false);
         group.addTextItem(getString(R.string.menu_back), -1);
         group.addTextItem(getString(R.string.menu_reload_webview), CMD_RELOAD_WEBVIEW);
+        group.addSelectionItem(getString(R.string.menu_open_links), CMD_OPEN_LINKS, true);
+
 
         group = mAppMenu.addGroup("", true);
         group.addSelectionItem(getString(R.string.menu_device_tracker), CMD_DEVICE_TRACKING, false);
@@ -804,7 +807,9 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
             case CMD_RELOAD_WEBVIEW:
                 updateWebView(mCurrentTrackable);
                 break;
-
+            case CMD_OPEN_LINKS:
+                mWebView.shouldIntent = !mWebView.shouldIntent;
+                break;
             default:
                 if (command >= mStartDatasetsIndex
                     && command < mStartDatasetsIndex + mDatasetsNumber) {

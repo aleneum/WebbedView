@@ -64,6 +64,8 @@
     <string name="menu_device_tracker">Device Tracker</string>
     <string name="menu_update_view">Update View</string>
     <string name="menu_reload_webview">Reload WebView</string>
+    <string name="menu_open_links">Open Links External</string>
+
     <string name="menu_flash">Flash</string>
     <string name="menu_flash_error_on">Unable to turn on flash</string>
     <string name="menu_flash_error_off">Unable to turn off flash</string>

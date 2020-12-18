@@ -30,7 +30,8 @@ public class CustomWebView extends WebView {
     private boolean mLoaded = false;
     private String mTransformedElement;
     private Projection mProjection;
-    private boolean mShouldIntent = true;
+    public boolean shouldIntent = true;
+    private boolean mShouldIntent = shouldIntent;
 
     public CustomWebView(Context context) {
         this(context, null);
@@ -68,9 +69,10 @@ public class CustomWebView extends WebView {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                if (mShouldIntent) {
+                if (mShouldIntent & shouldIntent) {
                     Log.i(LOGTAG, "Convert request into intent!");
                     Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     view.getContext().startActivity(intent);
                     return true;
                 }
@@ -103,7 +105,7 @@ public class CustomWebView extends WebView {
             Log.d(LOGTAG, Float.toString(resX) + ":" + Float.toString(resY));
             mProjection.updateResolution(resX, resY);
             mLoaded = true;
-            mShouldIntent = true;
+            mShouldIntent = shouldIntent;
 
         } catch (NumberFormatException e) {
             Log.w(LOGTAG, e.toString());
