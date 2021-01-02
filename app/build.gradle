@@ -14,8 +14,8 @@ android {
         applicationId "com.github.aleneum.WebbedView"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 100
-        versionName "1.0"
+        versionCode 110
+        versionName "1.1"
 
         ndk {
             // Default ABI list for this app, can be over-ridden by providing an abiList property
