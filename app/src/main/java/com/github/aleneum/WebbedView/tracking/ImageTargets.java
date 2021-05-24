@@ -12,16 +12,18 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.github.aleneum.WebbedView.Constants;
 import com.github.aleneum.WebbedView.R;
 import com.github.aleneum.WebbedView.VuforiaApplicationControl;
 import com.github.aleneum.WebbedView.VuforiaApplicationException;
 import com.github.aleneum.WebbedView.VuforiaApplicationSession;
 import com.github.aleneum.WebbedView.ui.AppMenu.AppMenu;
-import com.github.aleneum.WebbedView.ui.AppMenu.SampleAppMenuGroup;
+import com.github.aleneum.WebbedView.ui.AppMenu.SideMenuGroup;
 import com.github.aleneum.WebbedView.ui.AppMenu.SampleAppMenuInterface;
 import com.github.aleneum.WebbedView.ui.SampleAppMessage;
 import com.github.aleneum.WebbedView.utils.ApplicationGLView;
@@ -114,7 +116,8 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
         vuforiaAppSession = new VuforiaApplicationSession(this);
 
         startLoadingAnimation();
-
+//        mWebView = new CustomWebView(this);
+//        ((RelativeLayout) findViewById(R.id.camera_overlay_layout)).addView(mWebView);
         mWebView = findViewById(R.id.webview);
         mWebView.mActivity = this;
         dataManager.initialize(this);
@@ -321,7 +324,7 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
     
 
     private void startLoadingAnimation() {
-        mUILayout = (RelativeLayout) View.inflate(getApplicationContext(), R.layout.camera_overlay, null);
+        mUILayout = (RelativeLayout) View.inflate(this, R.layout.camera_overlay, null);
         
         mUILayout.setVisibility(View.VISIBLE);
         mUILayout.setBackgroundColor(Color.BLACK);
@@ -490,7 +493,7 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
 
             mUILayout.setBackgroundColor(Color.TRANSPARENT);
 
-            mAppMenu = new AppMenu(this, this, "Image Targets",
+            mAppMenu = new AppMenu(this, this, "Settings",
                     mGlView, mUILayout, mSettingsAdditionalViews);
             setSampleAppMenuSettings();
 
@@ -679,7 +682,7 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        Log.d(LOGTAG, "TOUCHED!");
+//        Log.d(LOGTAG, "TOUCHED!");
         // Process the Gestures
         return ((mAppMenu != null && mAppMenu.processEvent(event))
                 || mGestureDetector.onTouchEvent(event));
@@ -701,15 +704,20 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
     private final static int CMD_AUTOFOCUS = 5;
     private final static int CMD_FLASH = 6;
     private final static int CMD_DATASET_START_INDEX = 7;
+    private final static int CMD_UPDATE_SERVER = 8;
+
+    private EditText mServerUrlField;
 
     private void setSampleAppMenuSettings() {
-        SampleAppMenuGroup group;
+        SideMenuGroup group;
         
         group = mAppMenu.addGroup("", false);
-        group.addTextItem(getString(R.string.menu_back), -1);
         group.addTextItem(getString(R.string.menu_reload_webview), CMD_RELOAD_WEBVIEW);
         group.addSelectionItem(getString(R.string.menu_open_links), CMD_OPEN_LINKS, true);
 
+        group = mAppMenu.addGroup(getString(R.string.menu_server_url), true);
+        mServerUrlField = group.addInputField(Constants.CONTENT_HOST, CMD_UPDATE_SERVER);
+        group.addTextItem(getString(R.string.menu_server_url_update), CMD_UPDATE_SERVER);
 
         group = mAppMenu.addGroup("", true);
         group.addSelectionItem(getString(R.string.menu_device_tracker), CMD_DEVICE_TRACKING, false);
@@ -809,6 +817,9 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
                 break;
             case CMD_OPEN_LINKS:
                 mWebView.shouldIntent = !mWebView.shouldIntent;
+                break;
+            case CMD_UPDATE_SERVER:
+                Constants.CONTENT_HOST = mServerUrlField.getText().toString();
                 break;
             default:
                 if (command >= mStartDatasetsIndex
@@ -923,7 +934,7 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
                                (float) scalingParams.getDouble(2), (float) scalingParams.getDouble(3)};
             mWebView.setProjectionScaling(params);
             mCurrentTrackable = trackableName;
-            Log.d(LOGTAG, "Changed current target to " + mCurrentTrackable);
+            Log.i(LOGTAG, "Changed current target to " + mCurrentTrackable);
             mWebView.getRemoteContent(url, trackable.optString("elementId", null));
         } catch (JSONException err) {
             Log.e(LOGTAG, err.getMessage());

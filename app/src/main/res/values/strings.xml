@@ -64,7 +64,8 @@
     <string name="menu_device_tracker">Device Tracker</string>
     <string name="menu_update_view">Update View</string>
     <string name="menu_reload_webview">Reload WebView</string>
-    <string name="menu_open_links">Open Links External</string>
+    <string name="menu_open_links">Open Links Externally</string>
+
 
     <string name="menu_flash">Flash</string>
     <string name="menu_flash_error_on">Unable to turn on flash</string>
@@ -77,6 +78,9 @@
     <string name="menu_versions">VERSIONS</string>
     <string name="menu_camera">CAMERA</string>
     <string name="menu_virtual_buttons">VIRTUAL BUTTONS</string>
+    <string name="menu_server_url">AlARCo Server IP</string>
+    <string name="menu_server_url_update">Update</string>
+
 
     <string name="menu_button_red">Red</string>
     <string name="menu_button_blue">Blue</string>

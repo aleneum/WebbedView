@@ -45,6 +45,7 @@ import java.lang.ref.WeakReference;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -86,11 +87,13 @@ public class AppRenderer implements GLSurfaceView.Renderer {
     private boolean mIsPortrait = false;
     private boolean mInitialized = false;
     private boolean mIsActive = false;
+    private float[] lastMatrix = new float[16];
 
     AppRenderer(ImageTargets activity, VuforiaApplicationSession session) {
         mActivityRef = new WeakReference<>(activity);
         mRenderer = Renderer.getInstance();
         vuforiaAppSession = session;
+        Arrays.fill(lastMatrix, 0);
 
         Device device = Device.getInstance();
         device.setViewerActive(isStereo);  // Indicates if the app will be using a viewer, stereo mode and initializes the rendering primitives
@@ -127,7 +130,6 @@ public class AppRenderer implements GLSurfaceView.Renderer {
             this.configureVideoBackground();
     }
 
-
     void updateConfiguration() {
         this.onConfigurationChanged(mIsActive);
     }
@@ -145,12 +147,10 @@ public class AppRenderer implements GLSurfaceView.Renderer {
         mInitialized = true;
     }
 
-
     synchronized void updateRenderingPrimitives() {
         mRenderingPrimitives = Device.getInstance().getRenderingPrimitives();
     }
 
-    // Initializes shader
     private void initRendering() {
         vbShaderProgramID = Utils.createProgramFromShaderSrc(VideoBackgroundShader.VB_VERTEX_SHADER,
                 VideoBackgroundShader.VB_FRAGMENT_SHADER);
@@ -309,6 +309,8 @@ public class AppRenderer implements GLSurfaceView.Renderer {
         for (TrackableResult result : trackableResultList) {
             float[] modelProjection = new float[16];
             float[] modelMatrixArray = Tool.convertPose2GLMatrix(result.getPose()).getData();
+//            System.arraycopy(modelMatrixArray, 0, lastMatrix, 0, 16);
+//            Log.i(LOGTAG, Arrays.toString(lastMatrix));
             String trackableName = "";
             if (result.isOfType(ImageTargetResult.getClassType())) {
                 trackableName = result.getTrackable().getName();
@@ -334,8 +336,6 @@ public class AppRenderer implements GLSurfaceView.Renderer {
 
     }
 
-
-    // Returns scene scale factor primarily used for eye-wear devices
     private double getSceneScaleFactor(CameraCalibration cameraCalib) {
         if (cameraCalib == null) {
             Log.e(LOGTAG, "Cannot compute scene scale factor, camera calibration is invalid");
@@ -351,7 +351,6 @@ public class AppRenderer implements GLSurfaceView.Renderer {
         return Math.tan(cameraFovYRads / 2) / Math.tan(virtualFovYRads / 2);
     }
 
-    // Configures the video mode and sets offsets for the camera's image
     private void configureVideoBackground()
     {
         int xSize, ySize;
@@ -393,7 +392,6 @@ public class AppRenderer implements GLSurfaceView.Renderer {
         Renderer.getInstance().setVideoBackgroundConfig(config);
     }
 
-
     private void storeScreenDimensions() {
         // Query display dimensions:
         Point size = new Point();
@@ -404,8 +402,6 @@ public class AppRenderer implements GLSurfaceView.Renderer {
         mScreenHeight = size.y;
     }
 
-
-    // Stores the orientation depending on the current resources configuration
     private void updateActivityOrientation() {
         Configuration config = mActivityRef.get().getResources().getConfiguration();
 

@@ -39,6 +39,8 @@ public class CustomWebView extends WebView {
 
     public CustomWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        Log.i(LOGTAG, context.toString());
+
         setVisibility(INVISIBLE);
         this.setBackgroundColor(Color.TRANSPARENT);
         this.getSettings().setJavaScriptEnabled(true);
@@ -123,7 +125,7 @@ public class CustomWebView extends WebView {
         mTransformedElement = (elementId != null) ? "document.getElementById('" + elementId + "')" : "document.body";
         this.post(() -> {
             setVisibility(INVISIBLE);
-            Log.d(LOGTAG, "Loading: " + resolvedUrl);
+            Log.i(LOGTAG, "Loading: " + resolvedUrl);
             super.loadUrl(resolvedUrl);
         });
     }

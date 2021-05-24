@@ -65,7 +65,7 @@ public class Projection {
         Matrix.multiplyMV(projBottomLeft, 0, matrix, 0, vecBottomLeft, 0);
         Matrix.multiplyMV(projBottomRight, 0, matrix, 0, vecBottomRight, 0);
 
-        List<float[]> sPoints = getScreenPoints();
+//        List<float[]> sPoints = getScreenPoints();
         float[] p2d = general2DProjection(
                 getNormalizedCoordinates(projTopLeft),
                 getNormalizedCoordinates(projTopRight),

@@ -31,7 +31,7 @@ public class AppMenu
     private final GLSurfaceView mMovableView;
     private final SampleAppMenuView mParentMenuView;
     private final LinearLayout mMovableListView;
-    private final ArrayList<SampleAppMenuGroup> mSettingsItems = new ArrayList<>();
+    private final ArrayList<SideMenuGroup> mSettingsItems = new ArrayList<>();
     
     private final ArrayList<View> mAdditionalViews;
     private float mInitialAdditionalViewsX[];
@@ -115,7 +115,7 @@ public class AppMenu
                 
                 LinearLayout.LayoutParams groupParams = new LinearLayout.LayoutParams(
                     mListViewWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
-                for (SampleAppMenuGroup group : mSettingsItems)
+                for (SideMenuGroup group : mSettingsItems)
                 {
                     group.getMenuLayout().setLayoutParams(groupParams);
                 }
@@ -240,9 +240,9 @@ public class AppMenu
 
     // With this method we can separate our menu options into separate groups
     // ie: Separate group for datasets, camera settings, etc.
-    public SampleAppMenuGroup addGroup(String string, boolean hasTitle)
+    public SideMenuGroup addGroup(String string, boolean hasTitle)
     {
-        SampleAppMenuGroup newGroup = new SampleAppMenuGroup(mMenuInterfaceRef.get(),
+        SideMenuGroup newGroup = new SideMenuGroup(mMenuInterfaceRef.get(),
                 mActivityRef.get(), this, hasTitle, string, 700);
         mSettingsItems.add(newGroup);
         return mSettingsItems.get(mSettingsItems.size() - 1);
@@ -251,7 +251,7 @@ public class AppMenu
     
     public void attachMenu()
     {
-        for (SampleAppMenuGroup group : mSettingsItems)
+        for (SideMenuGroup group : mSettingsItems)
         {
             mMovableListView.addView(group.getMenuLayout());
         }
@@ -422,8 +422,8 @@ public class AppMenu
 //            return true;
 //        }
 
-        
-        
+
+
         // Percentage of the screen to display and maintain the menu
         private void setMaxSwipe(float maxXSwipe)
         {

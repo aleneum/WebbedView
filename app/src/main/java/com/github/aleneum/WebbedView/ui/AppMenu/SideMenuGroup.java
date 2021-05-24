@@ -4,17 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -22,11 +19,7 @@ import com.github.aleneum.WebbedView.R;
 
 import java.lang.ref.WeakReference;
 
-/**
- * With this class, you can create menu options as part of a group
- * You can add text, radio buttons, and switches
- */
-public class SampleAppMenuGroup
+public class SideMenuGroup
 {
     private final WeakReference<Activity> mActivityRef;
     private final WeakReference<SampleAppMenuInterface> mMenuInterfaceRef;
@@ -38,23 +31,20 @@ public class SampleAppMenuGroup
     private final float mEntriesTextSize;
     private final int mEntriesSidesPadding;
     private final int mEntriesUpDownPadding;
-    private final int mEntriesUpDownRadioPadding;
     private final Typeface mFont;
 
     private final int selectorResource;
 
     private final AppMenu mAppMenu;
-    private RadioGroup mRadioGroup;
 
     private final OnClickListener mClickListener;
     private final OnCheckedChangeListener mOnCheckedListener;
-    private final OnCheckedChangeListener mOnRadioCheckedListener;
-    
+
     
     @SuppressLint("InflateParams")
-    public SampleAppMenuGroup(SampleAppMenuInterface menuInterface,
-                              Activity context, AppMenu parent, boolean hasTitle, String title,
-                              int width)
+    public SideMenuGroup(SampleAppMenuInterface menuInterface,
+                         Activity context, AppMenu parent, boolean hasTitle, String title,
+                         int width)
     {
         mActivityRef = new WeakReference<>(context);
         mMenuInterfaceRef = new WeakReference<>(menuInterface);
@@ -76,8 +66,6 @@ public class SampleAppMenuGroup
             R.dimen.menu_entries_sides_padding);
         mEntriesUpDownPadding = (int) mActivityRef.get().getResources().getDimension(
             R.dimen.menu_entries_top_down_padding);
-        mEntriesUpDownRadioPadding = (int) mActivityRef.get().getResources()
-            .getDimension(R.dimen.menu_entries_top_down_radio_padding);
         dividerResource = R.layout.sample_app_menu_group_divider;
         
         selectorResource = android.R.drawable.list_selector_background;
@@ -127,26 +115,6 @@ public class SampleAppMenuGroup
                     mAppMenu.hideMenu();
             }
         };
-        
-        mOnRadioCheckedListener = new OnCheckedChangeListener()
-        {
-            
-            @Override
-            public void onCheckedChanged(CompoundButton switchView,
-                boolean isChecked)
-            {
-                if(isChecked)
-                {
-                    boolean result;
-                    int command = Integer.parseInt(switchView.getTag().toString());
-                    result = mMenuInterfaceRef.get().menuProcess(command);
-                    if (result)
-                    {
-                        mAppMenu.hideMenu();
-                    }
-                }
-            }
-        };
     }
     
     
@@ -158,11 +126,8 @@ public class SampleAppMenuGroup
         
         TextView newTextView = new TextView(mActivityRef.get());
         newTextView.setText(text);
-        
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN)
-            newTextView.setBackground(selectorDrawable);
-        else
-            newTextView.setBackgroundDrawable(selectorDrawable);
+
+        newTextView.setBackgroundDrawable(selectorDrawable);
         
         newTextView.setTypeface(mFont);
         newTextView.setTextSize(mEntriesTextSize);
@@ -179,6 +144,32 @@ public class SampleAppMenuGroup
 
         return  newTextView;
     }
+
+    public EditText addInputField(String text, int command)
+    {
+        Drawable selectorDrawable = mActivityRef.get().getResources().getDrawable(
+                selectorResource);
+        View returnView;
+
+        EditText newEditView = new EditText(mActivityRef.get());
+        newEditView.setText(text);
+
+        newEditView.setBackground(selectorDrawable);
+
+        newEditView.setTypeface(mFont);
+        newEditView.setTextSize(mEntriesTextSize);
+        newEditView.setTag(command);
+        newEditView.setVisibility(View.VISIBLE);
+        newEditView.setPadding(mEntriesSidesPadding,
+                mEntriesUpDownPadding, mEntriesSidesPadding,
+                mEntriesUpDownPadding);
+        mLayout.addView(newEditView, mLayoutParams);
+
+        View divider = inflater.inflate(dividerResource, null);
+        mLayout.addView(divider, mLayoutParams);
+
+        return newEditView;
+    }
     
 
     // Add a switch menu option
@@ -190,104 +181,30 @@ public class SampleAppMenuGroup
             selectorResource);
         View returnView;
         
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-        {
-            Switch newSwitchView = new Switch(mActivityRef.get());
-            newSwitchView.setText(text);
-            
-            newSwitchView.setBackground(selectorDrawable);
-            
-            newSwitchView.setTypeface(mFont);
-            newSwitchView.setTextSize(mEntriesTextSize);
-            newSwitchView.setTag(command);
-            newSwitchView.setVisibility(View.VISIBLE);
-            newSwitchView.setPadding(mEntriesSidesPadding,
-                mEntriesUpDownPadding, mEntriesSidesPadding,
-                mEntriesUpDownPadding);
-            newSwitchView.setChecked(on);
-            newSwitchView.setOnCheckedChangeListener(mOnCheckedListener);
-            mLayout.addView(newSwitchView, mLayoutParams);
-            returnView = newSwitchView;
-        } else
-        {
-            CheckBox newView = new CheckBox(mActivityRef.get());
-            
-            int leftPadding = newView.getPaddingLeft();
-            
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN)
-                newView.setBackground(selectorDrawable);
-            else
-                newView.setBackgroundDrawable(selectorDrawable);
-            
-            newView.setText(text);
-            newView.setTypeface(mFont);
-            newView.setTextSize(mEntriesTextSize);
-            newView.setTag(command);
-            newView.setVisibility(View.VISIBLE);
-            newView.setPadding(mEntriesSidesPadding + leftPadding,
-                mEntriesUpDownPadding, mEntriesSidesPadding,
-                mEntriesUpDownPadding);
-            newView.setChecked(on);
-            newView.setOnCheckedChangeListener(mOnCheckedListener);
-            mLayout.addView(newView, mLayoutParams);
-            returnView = newView;
-        }
+
+        Switch newSwitchView = new Switch(mActivityRef.get());
+        newSwitchView.setText(text);
+
+        newSwitchView.setBackground(selectorDrawable);
+
+        newSwitchView.setTypeface(mFont);
+        newSwitchView.setTextSize(mEntriesTextSize);
+        newSwitchView.setTag(command);
+        newSwitchView.setVisibility(View.VISIBLE);
+        newSwitchView.setPadding(mEntriesSidesPadding,
+            mEntriesUpDownPadding, mEntriesSidesPadding,
+            mEntriesUpDownPadding);
+        newSwitchView.setChecked(on);
+        newSwitchView.setOnCheckedChangeListener(mOnCheckedListener);
+        mLayout.addView(newSwitchView, mLayoutParams);
+        returnView = newSwitchView;
         
         View divider = inflater.inflate(dividerResource, null);
         mLayout.addView(divider, mLayoutParams);
         
         return returnView;
     }
-    
-    
-    @SuppressLint("InflateParams")
-    @SuppressWarnings({"deprecation", "UnusedReturnValue"})
-    public View addRadioItem(String text, int command, boolean isSelected)
-    {
-        if (mRadioGroup == null)
-        {
-            mRadioGroup = new RadioGroup(mActivityRef.get());
-            mRadioGroup.setVisibility(View.VISIBLE);
-            mLayout.addView(mRadioGroup, mLayoutParams);
-        }
-        
-        Drawable selectorDrawable = mActivityRef.get().getResources().getDrawable(
-            selectorResource);
-        
-        RadioButton newRadioButton = (RadioButton) inflater.inflate(
-            R.layout.sample_app_menu_group_radio_button, null, false);
-        newRadioButton.setText(text);
-        
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-            newRadioButton.setBackground(selectorDrawable);
-        else
-            newRadioButton.setBackgroundDrawable(selectorDrawable);
-        
-        newRadioButton.setTypeface(mFont);
-        newRadioButton.setTextSize(mEntriesTextSize);
-        newRadioButton.setPadding(mEntriesSidesPadding,
-            mEntriesUpDownRadioPadding, mEntriesSidesPadding,
-            mEntriesUpDownRadioPadding);
-        newRadioButton.setCompoundDrawablePadding(0);
-        newRadioButton.setTag(command);
-        newRadioButton.setVisibility(View.VISIBLE);
-        mRadioGroup.addView(newRadioButton, mLayoutParams);
-        
-        View divider = inflater.inflate(dividerResource, null);
-        mRadioGroup.addView(divider, mLayoutParams);
-        
-        if (isSelected)
-        {
-            mRadioGroup.check(newRadioButton.getId());
-        }
 
-        // Set the listener after changing the UI state to avoid calling the radio button functionality when creating the menu 
-        newRadioButton.setOnCheckedChangeListener(mOnRadioCheckedListener);
-
-        return newRadioButton;
-    }
-    
-    
     LinearLayout getMenuLayout()
     {
         return mLayout;
