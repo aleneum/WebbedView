@@ -2,6 +2,8 @@ package com.github.aleneum.WebbedView.tracking;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -107,11 +109,13 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
     private JSONObject mConfig;
     private boolean mUpdateProjectionEnabled = true;
     private DataManagement dataManager;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOGTAG, "onCreate");
         super.onCreate(savedInstanceState);
+        preferences = this.getSharedPreferences(this.getString(R.string.app_config), Context.MODE_PRIVATE);
         dataManager = GithubDataManagement.getInstance(this);
         vuforiaAppSession = new VuforiaApplicationSession(this);
 
@@ -716,11 +720,11 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
         group.addSelectionItem(getString(R.string.menu_open_links), CMD_OPEN_LINKS, true);
 
         group = mAppMenu.addGroup(getString(R.string.menu_server_url), true);
-        mServerUrlField = group.addInputField(Constants.CONTENT_HOST, CMD_UPDATE_SERVER);
+        mServerUrlField = group.addInputField(preferences.getString("contentHost", "http://alarco"), CMD_UPDATE_SERVER);
         group.addTextItem(getString(R.string.menu_server_url_update), CMD_UPDATE_SERVER);
 
         group = mAppMenu.addGroup("", true);
-        group.addSelectionItem(getString(R.string.menu_device_tracker), CMD_DEVICE_TRACKING, false);
+        group.addSelectionItem(getString(R.string.menu_device_tracker), CMD_DEVICE_TRACKING, preferences.getBoolean("deviceTracking", true));
         group.addSelectionItem(getString(R.string.menu_update_view), CMD_UPDATE_TRACKING, true);
 
         group = mAppMenu.addGroup(getString(R.string.menu_camera), true);
@@ -803,8 +807,10 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
                 break;
             
             case CMD_DEVICE_TRACKING:
-
                 result = toggleDeviceTracker();
+                SharedPreferences.Editor editorTracking = preferences.edit();
+                editorTracking.putBoolean("deviceTracking", !preferences.getBoolean("deviceTracking", true));
+                editorTracking.apply();
                 break;
 
             case CMD_UPDATE_TRACKING:
@@ -819,7 +825,9 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
                 mWebView.shouldIntent = !mWebView.shouldIntent;
                 break;
             case CMD_UPDATE_SERVER:
-                Constants.CONTENT_HOST = mServerUrlField.getText().toString();
+                SharedPreferences.Editor editorHost = preferences.edit();
+                editorHost.putString("contentHost", mServerUrlField.getText().toString());
+                editorHost.apply();
                 break;
             default:
                 if (command >= mStartDatasetsIndex

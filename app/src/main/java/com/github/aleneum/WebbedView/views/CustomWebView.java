@@ -3,6 +3,7 @@ package com.github.aleneum.WebbedView.views;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.AttributeSet;
@@ -31,6 +32,7 @@ public class CustomWebView extends WebView {
     private String mTransformedElement;
     private Projection mProjection;
     public boolean shouldIntent = true;
+    private static SharedPreferences preferences;
     private boolean mShouldIntent = shouldIntent;
 
     public CustomWebView(Context context) {
@@ -39,8 +41,7 @@ public class CustomWebView extends WebView {
 
     public CustomWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Log.i(LOGTAG, context.toString());
-
+        preferences = context.getSharedPreferences(context.getString(R.string.app_config),Context.MODE_PRIVATE);
         setVisibility(INVISIBLE);
         this.setBackgroundColor(Color.TRANSPARENT);
         this.getSettings().setJavaScriptEnabled(true);
@@ -119,7 +120,7 @@ public class CustomWebView extends WebView {
     }
 
     public void getRemoteContent(String url, String elementId) {
-        final String resolvedUrl = (url.startsWith("http")) ? url : Constants.CONTENT_HOST + "/" + url;
+        final String resolvedUrl = (url.startsWith("http")) ? url : preferences.getString("contentHost", "http://alarco") + "/" + url;
         mLoaded = false;
         mShouldIntent = false;
         mTransformedElement = (elementId != null) ? "document.getElementById('" + elementId + "')" : "document.body";
