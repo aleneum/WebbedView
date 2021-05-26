@@ -2,7 +2,7 @@
   "targetDefinitions": [
     "CollAboRation.xml"
   ],
-  "defaultScaling": [0.16, 0.125, -0.16, -0.125],
+  "defaultScaling": [0.167, 0.125, -0.165, -0.125],
   "staticTransform":  {
   },
   "targets": {
