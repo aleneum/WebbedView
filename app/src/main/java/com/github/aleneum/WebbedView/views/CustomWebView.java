@@ -140,10 +140,11 @@ public class CustomWebView extends WebView {
         return super.onTouchEvent(event);
     }
 
-    public void updateWebViewTransform(float[] matrix) {
-        float[] transform = mProjection.calcProjection(matrix);
-        this.debugWebViewMatrix(mProjection.getScreenPoints());
-
+    public void updateWebViewTransform(float[] matrix, float[] staticRotation, float[] staticPosition) {
+        float[] transform = mProjection.calcProjection(matrix, staticRotation, staticPosition);
+        if (staticRotation == null) {
+            this.debugWebViewMatrix(mProjection.getScreenPoints());
+        }
         String matString = IntStream.range(0, transform.length)
                 .mapToObj(i -> Float.toString(transform[i]))
                 .collect(Collectors.joining(","));

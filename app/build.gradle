@@ -3,6 +3,14 @@ apply plugin: 'com.android.application'
 def VUFORIA_SDK_DIR = '../vuforia'
 
 android {
+    signingConfigs {
+        aleneumRelease {
+            storeFile file('C:\\Users\\alneuman\\sciebo\\org\\android.release.jks')
+            storePassword '2l2Y9cVUtPPPX1WIvHSd'
+            keyPassword '2l2Y9cVUtPPPX1WIvHSd'
+            keyAlias 'aleneum.release'
+        }
+    }
     compileSdkVersion 30
 
     sourceSets.main {
@@ -34,7 +42,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.aleneumRelease
         }
         debug {
             minifyEnabled false

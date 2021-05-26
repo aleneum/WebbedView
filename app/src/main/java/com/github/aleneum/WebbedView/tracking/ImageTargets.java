@@ -55,6 +55,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -110,6 +111,8 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
     private boolean mUpdateProjectionEnabled = true;
     private DataManagement dataManager;
     private SharedPreferences preferences;
+    private float[] mStaticRotation;
+    private float[] mStaticPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +135,25 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
         try {
             mConfig = dataManager.getConfig();
             JSONArray definitions = mConfig.getJSONArray("targetDefinitions");
+            if (mConfig.has("staticTransform")) {
+                JSONObject staticTransform = mConfig.getJSONObject("staticTransform");
+                if (staticTransform.has("rotation")) {
+                    JSONArray rotationArray = staticTransform.getJSONArray("rotation");
+                    mStaticRotation = new float[6];
+                    Arrays.fill(mStaticRotation, 0);
+                    for (int i = 0; i < mStaticRotation.length; ++i) {
+                        mStaticRotation[i] = (float) rotationArray.getDouble(i);
+                    }
+                }
+                if (staticTransform.has("position")) {
+                    JSONArray positionArray = staticTransform.getJSONArray("position");
+                    mStaticPosition = new float[2];
+                    Arrays.fill(mStaticPosition, 0);
+                    for (int i = 0; i < mStaticPosition.length; ++i) {
+                        mStaticPosition[i] = (float) positionArray.getDouble(i);
+                    }
+                }
+            }
             for (int i = 0; i < definitions.length(); ++i) {
                 String fileName = definitions.getString(i);
                 mDatasetStrings.add(fileName);
@@ -191,8 +213,7 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
         }
 
         if (mWebView.isLoaded()) {
-            Log.v(LOGTAG, "update webview");
-            this.mWebView.updateWebViewTransform(matrix);
+            this.mWebView.updateWebViewTransform(matrix, mStaticRotation, mStaticPosition);
         }
     }
 

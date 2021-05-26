@@ -3,6 +3,11 @@
     "CollAboRation.xml"
   ],
   "defaultScaling": [0.167, 0.125, -0.165, -0.125],
+  "staticTransform":  {
+    "rotation": [0.84566456,0.02780745, -0.008003345,0.56885505, 5.2140826E-5, 5.2140826E-5],
+    "position": [3.6090672, 180.25616]
+  },
+
   "targets": {
     "page118": { "url": "Pre-Brix.html?page=118" },
     "page120": { "url": "Pre-Brix.html?page=120" },

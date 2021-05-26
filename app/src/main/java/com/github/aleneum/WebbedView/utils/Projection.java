@@ -15,17 +15,6 @@ public class Projection {
 
     private static final String LOGTAG = "Projection";
 
-    private static final float[] pointTopLeft = {-0.1075f, 0.1515f};
-    private static final float[] pointTopRight = {0.106f, 0.1515f};
-    private static final float[] pointBottomLeft = {-0.1075f, -0.149f};
-    private static final float[] pointBottomRight = {0.106f, -0.149f};
-
-//    private static final float[] pointTopLeft = {-0.1085f, 0.1475f};
-//    private static final float[] pointTopRight = {0.105f, 0.1475f};
-//    private static final float[] pointBottomLeft = {-0.1085f, -0.155f};
-//    private static final float[] pointBottomRight = {0.105f, -0.155f};
-
-
     private float[] vecTopLeft = {-1,1,0};
     private float[] vecTopRight = {1,1,0};
     private float[] vecBottomLeft = {-1,-1,0};
@@ -59,7 +48,7 @@ public class Projection {
                         new float[]{0 , mResY/mResX}, new float[]{1 , mResY/mResX}));
     }
 
-    public float[] calcProjection(@NotNull float[] matrix) {
+    public float[] calcProjection(@NotNull float[] matrix, float[] staticRotation, float[] staticPosition) {
         Matrix.multiplyMV(projTopLeft, 0, matrix, 0, vecTopLeft, 0);
         Matrix.multiplyMV(projTopRight, 0, matrix, 0, vecTopRight, 0);
         Matrix.multiplyMV(projBottomLeft, 0, matrix, 0, vecBottomLeft, 0);
@@ -73,10 +62,24 @@ public class Projection {
                 getNormalizedCoordinates(projBottomRight));
 
         for(int i=0; i < p2d.length; ++i) { p2d[i] /= p2d[10]; }
+        if (staticRotation != null) {
+            p2d[0] = staticRotation[0];
+            p2d[4] = staticRotation[1];
+            p2d[1] = staticRotation[2];
+            p2d[5] = staticRotation[3];
+            p2d[8] = staticRotation[4] * mResX;
+            p2d[9] = staticRotation[5] * mResX;
+        }
+        if (staticPosition != null) {
+            p2d[2] = staticPosition[0] / mResX;
+            p2d[6] = staticPosition[1] / mResX;
+        }
         float[] transform = { p2d[0], p2d[4], 0,  p2d[8] / mResX,
                               p2d[1], p2d[5], 0,  p2d[9] / mResX,
                                    0,      0, 1,       0,
                               p2d[2] * mResX, p2d[6] * mResX, 0, p2d[10] };
+
+//        (0.90780765,-0.010268951,0.0,-2.1909646E-5,-0.0032912525,0.61834687,0.0,-2.2220582E-5,0.0,0.0,1.0,0.0,-3.7224307,118.999535,0.0,1.0)
 
 //        List<float[]> nPoints = Arrays.asList(
 //                getNormalizedCoordinates(projTopLeft), getNormalizedCoordinates(projTopRight),
