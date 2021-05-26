@@ -22,8 +22,8 @@ android {
         applicationId "com.github.aleneum.WebbedView"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 110
-        versionName "1.1"
+        versionCode 120
+        versionName "1.2"
 
         ndk {
             // Default ABI list for this app, can be over-ridden by providing an abiList property
@@ -42,8 +42,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled false
             signingConfig signingConfigs.aleneumRelease
         }
         debug {

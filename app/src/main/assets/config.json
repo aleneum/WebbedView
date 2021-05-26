@@ -2,12 +2,9 @@
   "targetDefinitions": [
     "CollAboRation.xml"
   ],
-  "defaultScaling": [0.167, 0.125, -0.165, -0.125],
+  "defaultScaling": [0.16, 0.125, -0.16, -0.125],
   "staticTransform":  {
-    "rotation": [0.84566456,0.02780745, -0.008003345,0.56885505, 5.2140826E-5, 5.2140826E-5],
-    "position": [3.6090672, 180.25616]
   },
-
   "targets": {
     "page118": { "url": "Pre-Brix.html?page=118" },
     "page120": { "url": "Pre-Brix.html?page=120" },
@@ -60,7 +57,7 @@
     "page214": { "url": "Pro-Elan.html?page=214" },
     "page216": { "url": "Pro-Elan.html?page=216" },
     "page217": { "url": "Pro-Elan.html?page=217" },
-    "page218": { "url": "Pro-TSN.html?page=218&debug=true" },
+    "page218": { "url": "Pro-TSN.html?page=218" },
     "page222": { "url": "Pro-TSN.html?page=222" },
     "page223": { "url": "Pro-TSN.html?page=223" },
     "page226": { "url": "Pro-TSN.html?page=226" },
