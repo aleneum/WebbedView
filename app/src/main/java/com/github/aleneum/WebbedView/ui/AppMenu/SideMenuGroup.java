@@ -8,16 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.github.aleneum.WebbedView.R;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 public class SideMenuGroup
 {
@@ -39,6 +43,7 @@ public class SideMenuGroup
 
     private final OnClickListener mClickListener;
     private final OnCheckedChangeListener mOnCheckedListener;
+    private final AdapterView.OnItemSelectedListener mOnSelectedListener;
 
     
     @SuppressLint("InflateParams")
@@ -95,6 +100,20 @@ public class SideMenuGroup
                 int command = Integer.parseInt(v.getTag().toString());
                 mMenuInterfaceRef.get().menuProcess(command);
                 mAppMenu.hideMenu();
+            }
+        };
+
+        mOnSelectedListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                int command = Integer.parseInt(adapterView.getTag().toString());
+                boolean result = mMenuInterfaceRef.get().menuProcess(command);
+                mAppMenu.hideMenu();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         };
         
@@ -170,17 +189,35 @@ public class SideMenuGroup
 
         return newEditView;
     }
-    
+
+    public Spinner addDropdown(String[] options, int command, String selected)
+    {
+
+        Drawable selectorDrawable = mActivityRef.get().getResources().getDrawable(
+                selectorResource);
+
+        Spinner newSpinnerView = new Spinner(mActivityRef.get());
+        ArrayAdapter<String> items = new ArrayAdapter<>(mActivityRef.get(), android.R.layout.simple_spinner_item, options);
+        newSpinnerView.setAdapter(items);
+        newSpinnerView.setSelection(Arrays.asList(options).indexOf(selected));
+        newSpinnerView.setBackground(selectorDrawable);
+        newSpinnerView.setTag(command);
+        newSpinnerView.setVisibility(View.VISIBLE);
+        newSpinnerView.setPadding(mEntriesSidesPadding, mEntriesUpDownPadding, mEntriesSidesPadding, mEntriesUpDownPadding);
+        newSpinnerView.setOnItemSelectedListener(mOnSelectedListener);
+        mLayout.addView(newSpinnerView, mLayoutParams);
+        return newSpinnerView;
+    }
 
     // Add a switch menu option
     @SuppressWarnings("deprecation")
     public View addSelectionItem(String text, int command, boolean on)
     {
-        
+
         Drawable selectorDrawable = mActivityRef.get().getResources().getDrawable(
             selectorResource);
         View returnView;
-        
+
 
         Switch newSwitchView = new Switch(mActivityRef.get());
         newSwitchView.setText(text);
@@ -198,10 +235,10 @@ public class SideMenuGroup
         newSwitchView.setOnCheckedChangeListener(mOnCheckedListener);
         mLayout.addView(newSwitchView, mLayoutParams);
         returnView = newSwitchView;
-        
+
         View divider = inflater.inflate(dividerResource, null);
         mLayout.addView(divider, mLayoutParams);
-        
+
         return returnView;
     }
 

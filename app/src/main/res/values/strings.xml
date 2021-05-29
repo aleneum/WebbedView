@@ -80,6 +80,7 @@
     <string name="menu_virtual_buttons">VIRTUAL BUTTONS</string>
     <string name="menu_server_url">AlARCo Server IP</string>
     <string name="menu_server_url_update">Update</string>
+    <string name="menu_marker_title">Marker Database</string>
 
 
     <string name="menu_button_red">Red</string>

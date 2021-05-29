@@ -3,6 +3,7 @@ package com.github.aleneum.WebbedView.tracking;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ import com.github.aleneum.WebbedView.R;
 import com.github.aleneum.WebbedView.VuforiaApplicationControl;
 import com.github.aleneum.WebbedView.VuforiaApplicationException;
 import com.github.aleneum.WebbedView.VuforiaApplicationSession;
+import com.github.aleneum.WebbedView.ui.ActivityList.ActivitySplashScreen;
 import com.github.aleneum.WebbedView.ui.AppMenu.AppMenu;
 import com.github.aleneum.WebbedView.ui.AppMenu.SideMenuGroup;
 import com.github.aleneum.WebbedView.ui.AppMenu.SampleAppMenuInterface;
@@ -39,6 +42,8 @@ import com.github.aleneum.WebbedView.views.CustomWebView;
 import com.vuforia.CameraDevice;
 import com.vuforia.DataSet;
 import com.vuforia.DeviceTracker;
+import com.vuforia.Image;
+import com.vuforia.ImageTarget;
 import com.vuforia.ObjectTracker;
 import com.vuforia.PositionalDeviceTracker;
 import com.vuforia.STORAGE_TYPE;
@@ -59,6 +64,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 import java.util.stream.Collectors;
 
 public class ImageTargets extends Activity implements VuforiaApplicationControl,
@@ -135,6 +141,9 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
         try {
             mConfig = dataManager.getConfig();
             JSONArray definitions = mConfig.getJSONArray("targetDefinitions");
+            String currentDatabase = preferences.getString("currentDatabase", definitions.getString(0));
+            mDatasetStrings.add(currentDatabase);
+
             if (mConfig.has("staticTransform")) {
                 JSONObject staticTransform = mConfig.getJSONObject("staticTransform");
                 if (staticTransform.has("rotation")) {
@@ -153,11 +162,6 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
                         mStaticPosition[i] = (float) positionArray.getDouble(i);
                     }
                 }
-            }
-            for (int i = 0; i < definitions.length(); ++i) {
-                String fileName = definitions.getString(i);
-                mDatasetStrings.add(fileName);
-                Log.d(LOGTAG, "Adding: " + fileName);
             }
         } catch (JSONException err) {
             Log.e(LOGTAG, err.getMessage());
@@ -386,7 +390,7 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
             return false;
         }
         String filePath = getFilesDir() + "/" + mDatasetStrings.get(mCurrentDatasetSelectionIndex);
-        Log.d(LOGTAG,  filePath);
+        Log.i(LOGTAG,  "Loading Dataset: " + filePath);
         // check for resources; assets will override downloaded files
         if (!mCurrentDataset.load(mDatasetStrings.get(mCurrentDatasetSelectionIndex),
                 STORAGE_TYPE.STORAGE_APPRESOURCE) && !mCurrentDataset.load(filePath,
@@ -408,7 +412,14 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
         
         return true;
     }
-    
+
+    private void triggerRestart() {
+        Intent intent = new Intent(this, ActivitySplashScreen.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(intent);
+        this.finish();
+        Runtime.getRuntime().exit(0);
+    }
     
     @Override
     public boolean doUnloadTrackersData() {
@@ -730,8 +741,10 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
     private final static int CMD_FLASH = 6;
     private final static int CMD_DATASET_START_INDEX = 7;
     private final static int CMD_UPDATE_SERVER = 8;
+    private final static int CMD_DATASET_SELECTED = 9;
 
     private EditText mServerUrlField;
+    private Spinner mDatabaseSpinner;
 
     private void setSampleAppMenuSettings() {
         SideMenuGroup group;
@@ -753,6 +766,19 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
             CMD_AUTOFOCUS, mContAutofocus);
         mFlashOptionView = group.addSelectionItem(
             getString(R.string.menu_flash), CMD_FLASH, false);
+
+        group = mAppMenu.addGroup(getString(R.string.menu_marker_title), true);
+        Vector<String> options = new Vector<>();
+        try {
+            JSONArray definitions = mConfig.getJSONArray("targetDefinitions");
+            for (int i=0; i < definitions.length(); ++i) {
+                options.add(definitions.getString(i));
+            }
+        } catch (JSONException err) {
+            Log.w(LOGTAG, "No definitions found!");
+        }
+        String current = preferences.getString("currentDatabase", options.get(0));
+        mDatabaseSpinner = group.addDropdown(options.toArray(new String[options.size()]), CMD_DATASET_SELECTED, current);
 
         mStartDatasetsIndex = CMD_DATASET_START_INDEX;
         mDatasetsNumber = mDatasetStrings.size();
@@ -850,6 +876,17 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
                 editorHost.putString("contentHost", mServerUrlField.getText().toString());
                 editorHost.apply();
                 break;
+            case CMD_DATASET_SELECTED:
+                String selection = mDatabaseSpinner.getSelectedItem().toString();
+                if (!selection.equals(preferences.getString("currentDatabase", ""))) {
+                    SharedPreferences.Editor editorDatabase = preferences.edit();
+                    editorDatabase.putString("currentDatabase", selection);
+                    Log.i(LOGTAG, "Chose new Database: " + selection);
+                    editorDatabase.commit();
+                    this.triggerRestart();
+                }
+
+                break;
             default:
                 if (command >= mStartDatasetsIndex
                     && command < mStartDatasetsIndex + mDatasetsNumber) {
@@ -862,7 +899,6 @@ public class ImageTargets extends Activity implements VuforiaApplicationControl,
         
         return result;
     }
-
 
     private boolean toggleDeviceTracker() {
         boolean result = true;

@@ -1,8 +1,17 @@
 {
   "targetDefinitions": [
-    "CollAboRation.xml"
+    "CollAboRation.xml",
+    "Demo.xml",
+    "Preprocessing.xml",
+    "Survey.xml",
+    "HeadGestures.xml",
+    "SpeechActivity.xml",
+    "InteractionSpace.xml",
+    "ObjectMovement.xml",
+    "Elan.xml",
+    "DeepLearning.xml"
   ],
-  "defaultScaling": [0.167, 0.125, -0.165, -0.125],
+  "defaultScaling": [0.164, 0.125, -0.164, -0.125],
   "staticTransform":  {
   },
   "targets": {
