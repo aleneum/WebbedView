@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
-    <ImageTarget name="page130" size="0.253000 0.325878" />
-    <ImageTarget name="page128" size="0.253000 0.325878" />
-    <ImageTarget name="page124" size="0.253000 0.325878" />
-    <ImageTarget name="page123" size="0.253000 0.325878" />
-    <ImageTarget name="page122" size="0.253000 0.325878" />
-    <ImageTarget name="page120" size="0.253000 0.325878" />
-    <ImageTarget name="page118" size="0.253000 0.325878" />
+    <ImageTarget name="page130" size="0.253000 0.327991" />
+    <ImageTarget name="page128" size="0.253000 0.327991" />
+    <ImageTarget name="page124" size="0.253000 0.327991" />
+    <ImageTarget name="page123" size="0.253000 0.327991" />
+    <ImageTarget name="page122" size="0.253000 0.327991" />
+    <ImageTarget name="page120" size="0.253000 0.327991" />
+    <ImageTarget name="page118" size="0.253000 0.327991" />
   </Tracking>
 </QCARConfig>

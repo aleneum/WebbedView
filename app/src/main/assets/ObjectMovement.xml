@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
-    <ImageTarget name="page198" size="0.253000 0.325878" />
-    <ImageTarget name="page197" size="0.253000 0.325878" />
-    <ImageTarget name="page196" size="0.253000 0.325878" />
-    <ImageTarget name="page195" size="0.253000 0.325878" />
-    <ImageTarget name="page192" size="0.253000 0.325878" />
-    <ImageTarget name="page191" size="0.253000 0.325878" />
-    <ImageTarget name="page188" size="0.253000 0.325878" />
-    <ImageTarget name="page187" size="0.253000 0.325878" />
-    <ImageTarget name="page185" size="0.253000 0.325878" />
-    <ImageTarget name="page184" size="0.253000 0.325878" />
-    <ImageTarget name="page183" size="0.253000 0.325878" />
+    <ImageTarget name="page198" size="0.253000 0.327991" />
+    <ImageTarget name="page197" size="0.253000 0.327991" />
+    <ImageTarget name="page196" size="0.253000 0.327991" />
+    <ImageTarget name="page195" size="0.253000 0.327991" />
+    <ImageTarget name="page192" size="0.253000 0.327991" />
+    <ImageTarget name="page191" size="0.253000 0.327991" />
+    <ImageTarget name="page188" size="0.253000 0.327991" />
+    <ImageTarget name="page187" size="0.253000 0.327991" />
+    <ImageTarget name="page185" size="0.253000 0.327991" />
+    <ImageTarget name="page184" size="0.253000 0.327991" />
+    <ImageTarget name="page183" size="0.253000 0.327991" />
   </Tracking>
 </QCARConfig>
